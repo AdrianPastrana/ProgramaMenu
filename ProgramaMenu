@@ -1,0 +1,9 @@
+package programamenu;
+import Vista.Vprincipal;
+
+public class ProgramaMenu {
+    public static void main(String[] args){
+        Vprincipal vp = new Vprincipal();
+        vp.setVisible(true);
+    } 
+}
