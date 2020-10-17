@@ -1,0 +1,32 @@
+
+package Expresiones;
+
+import javax.swing.JLabel;
+
+public class ExprLogV2 {
+
+    public ExprLogV2(String Expr, JLabel num, JLabel Tnum, JLabel let, JLabel Tlet) {
+        //Scanner teclado = new Scanner(System.in);
+        //String cadena;
+        //System.out.println("Cadena: ");
+        //cadena = teclado.nextLine();
+        char [] cadena2 = Expr.toCharArray();
+        String n = "";
+        String l ="";
+        for (int i = 0; i < cadena2.length; i++) {            
+            if (Character.isDigit(cadena2[i])) {
+                n += cadena2[i];
+            }else {
+                l +=cadena2[i];
+            }
+        }
+        num.setText(n);
+        int totaln= n.length();
+        String tN = String.valueOf(totaln);
+        Tnum.setText(tN);
+        let.setText(l);
+        int totall = l.length();
+        String tL = String.valueOf(totall);
+        Tlet.setText(tL);        
+    }       
+}
