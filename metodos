@@ -1,0 +1,140 @@
+package Expresiones;
+
+import javax.swing.table.DefaultTableModel;
+
+public class metodos {
+
+    private boolean p[] = {true, true, false, false};
+    private boolean q[] = {true, false, true, false};
+    private boolean resultado[];
+    private boolean aux[][];
+    private DefaultTableModel modelo;
+
+    public metodos() {
+        aux = new boolean[4][5];
+        resultado = new boolean[4];
+        for (int i = 0; i < aux.length; i++) {
+            aux[i][0] = p[i];
+            aux[i][1] = q[i];
+        }
+    }
+
+    public DefaultTableModel expresion(DefaultTableModel model) {
+        modelo = model;
+        resultado = tablasV(3, p, q);
+        vaciar(2);
+        resultado = tablasV(1, resultado, p);
+        vaciar(3);
+        resultado = tablasV(3, resultado, q);
+        vaciar(4);
+        pasarValores();
+        return modelo;
+    }
+
+    private void vaciar(int x) {
+        for (int i = 0; i < aux.length; i++) {
+            aux[i][x] = resultado[i];
+        }
+    }
+
+    private void pasarValores() {
+        String vector[] = new String[5];
+        for (int i = 0; i < aux.length; i++) {
+            for (int j = 0; j < aux[0].length; j++) {
+                vector[j] = String.valueOf(aux[i][j]);
+            }
+            modelo.addRow(vector);
+        }
+    }
+
+    private boolean[] tablasV(int tabla, boolean p[], boolean q[]) {
+        boolean resul[] = new boolean[4];
+
+        switch (tabla) {
+            case 0: //not
+                for (int i = 0; i < p.length; i++) {
+                    if (p[i] == true) {
+                        resul[i] = false;
+                    } else {
+                        resul[i] = true;
+                    }
+                }
+                break;
+            case 1: //and
+                for (int i = 0; i < resul.length; i++) {
+                    if (p[i] == true && q[i] == true) {
+                        resul[i] = true;
+                    } else if (p[i] == true && q[i] == false) {
+                        resul[i] = false;
+                    } else if (p[i] == false && q[i] == true) {
+                        resul[i] = false;
+                    } else if (p[i] == false && q[i] == false) {
+                        resul[i] = false;
+                    }
+                }
+                break;
+            case 2: //or
+                for (int i = 0; i < resul.length; i++) {
+                    if (p[i] == true && q[i] == true) {
+                        resul[i] = true;
+                    } else if (p[i] == true && q[i] == false) {
+                        resul[i] = true;
+                    } else if (p[i] == false && q[i] == true) {
+                        resul[i] = true;
+                    } else if (p[i] == false && q[i] == false) {
+                        resul[i] = false;
+                    }
+                }
+                break;
+            case 3: //condicional
+                for (int i = 0; i < resul.length; i++) {
+                    if (p[i] == true && q[i] == true) {
+                        resul[i] = true;
+                    } else if (p[i] == true && q[i] == false) {
+                        resul[i] = false;
+                    } else if (p[i] == false && q[i] == true) {
+                        resul[i] = true;
+                    } else if (p[i] == false && q[i] == false) {
+                        resul[i] = true;
+                    }
+                }
+                break;
+            case 4: //bicondicional
+                for (int i = 0; i < resul.length; i++) {
+                    if (p[i] == true && q[i] == true) {
+                        resul[i] = true;
+                    } else if (p[i] == true && q[i] == false) {
+                        resul[i] = false;
+                    } else if (p[i] == false && q[i] == true) {
+                        resul[i] = false;
+                    } else if (p[i] == false && q[i] == false) {
+                        resul[i] = true;
+                    }
+                }
+                break;
+        }
+        return resul;
+    }
+
+    // tautologia all true
+    //contigencia t && f
+    //contradiccion all false
+    public String resultado() {
+        String aux = "";
+        for (int i = 0; i < resultado.length; i++) {
+            if (resultado[i] == true) {
+                aux += "1";
+            } else {
+                aux += "0";
+            }
+        }
+
+        if (aux.equalsIgnoreCase("1111")) {
+            return "ES UNA TAUTOLOGIA";
+        } else if (aux.equalsIgnoreCase("0000")) {
+            return "ES UNA CONTRADICCION";
+        } else {
+            return "ES UNA CONTINGENCIA";
+        }
+    }
+}
