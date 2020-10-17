@@ -1,0 +1,143 @@
+package Expresiones;
+
+import java.util.ArrayList;
+import java.util.List;
+//import java.util.Scanner;
+import javax.swing.JLabel;
+
+public class EvaluadorOperador {
+
+    public EvaluadorOperador(JLabel ex, JLabel salida,JLabel Postfija) {
+        //Scanner teclado = new Scanner(System.in);
+        //String dat;
+       
+        String dat = "(6+2)*3/(2^2)-4";
+        ex.setText(dat);
+        //System.out.print("\033[32m Ingresa la expresión a evaluar: ");
+        //dat = teclado.nextLine();
+        //System.out.println("\033[31m La Expresion en postfijo es: " + convertToPosfija(dat).toString());
+        Postfija.setText(convertToPosfija(dat).toString());
+        double resultado = evaluar(dat);
+        String resultado2 = String.valueOf(resultado);        
+        salida.setText(resultado2);
+        //System.out.println("\033[34m El resultado de la expresión es: " + resultado);
+    }
+
+ public static double evaluar(String infija) {
+     List<String> posfija = convertToPosfija(infija);
+     return evaluarPosfija(posfija);
+ }
+
+ private static List<String> convertToPosfija(String infija) {
+    Pila pilita = new Pila(100);//nuestra pila
+    ArrayList<String> posfija = new ArrayList<>();
+    char caracter;
+    String aux = "";
+    for (int i = 0; i < infija.length(); i++) {
+        caracter = infija.charAt(i);
+        if(isOperator(""+caracter)) {
+            if(!aux.equals("")) {
+                posfija.add(aux);
+                aux = "";
+            }
+            if(pilita.estaVacia()) {//si la pila está vacía la apilamos normal
+                pilita.apilar(String.valueOf(caracter));
+            }else {
+                String cimaPila = (String) pilita.elementoTope();
+                if(caracter==')') {
+                    //desapilamos hasta encontrar un paréntesis que abre
+                    while(!(cimaPila=(String) pilita.desapilar()).equals("(")) {
+                        posfija.add(cimaPila);
+                    }
+                }else {
+                    if(valorEnExpresion(""+caracter)>valorEnPila(cimaPila)) {
+                        pilita.apilar(""+caracter);
+                    }else {
+                        posfija.add((String) pilita.desapilar());
+                        pilita.apilar(""+caracter);      
+                    }                    
+                }
+            }
+        }else {
+            aux+= caracter;
+        }
+    }
+    if(!aux.equals("")) {
+        posfija.add(aux);
+    }
+    //mientras tengamos operadores en la pila, tenemos que 
+    //sacarlo y pasarlo a la posfija
+    while(!pilita.estaVacia()) {
+        posfija.add((String) pilita.desapilar());
+    }
+    return posfija;
+ }
+
+ private static double evaluarPosfija(List<String> posfija) {
+     Pila pilita = new Pila(100);
+     String caracter;  
+     for (int i = 0; i < posfija.size(); i++) {
+         caracter = posfija.get(i);
+         if(!isOperator(caracter)) {    
+             pilita.apilar(caracter);
+         }else {
+             double n2 = Double.parseDouble((String) pilita.desapilar());
+             double n1 = Double.parseDouble((String) pilita.desapilar());
+             double rspt = 0;
+             if(caracter.equals("+")) {
+                 rspt = n1+n2;
+             }else if(caracter.equals("-")) {
+                 rspt = n1-n2;    
+             }else if(caracter.equals("*")) {
+                 rspt = n1*n2;
+             }else if(caracter.equals("/")) {
+                 rspt = n1/n2;
+             }else if(caracter.equals("^")) {
+                 rspt = Math.pow(n1,n2);
+             }
+             pilita.apilar(""+rspt);
+         }
+     }
+     return Double.parseDouble((String) pilita.desapilar());
+ } 
+
+ private static int valorEnPila(String cimaPila) {
+     switch (cimaPila) {
+         case "^":
+             return 3;
+         case "*":
+             return 2;
+         case "/":
+             return 2;
+         case "+":
+             return 1;
+         case "-":
+             return 1;
+         case "(":
+             return 0;
+     }
+     return 0;
+ }
+
+ private static int valorEnExpresion(String operador) {
+     switch (operador) {
+         case "^":
+             return 4;
+         case "*":
+             return 2;
+         case "/":
+             return 2;
+         case "+":
+             return 1;
+         case "-":
+             return 1;
+         case "(":
+             return 5;
+     }
+     return 0;
+ }
+
+ private static boolean isOperator(String caracter) {
+     return caracter.matches("^[+|*|/|\\-|^|(|)]$");
+ }    
+}
